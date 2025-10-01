@@ -1,0 +1,2558 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Bahari</title>
+    <style>
+        :root {
+            --primary-color: #0F1014;
+            --background-color: #F5F5F7;
+            --header-bg: #FFFFFF;
+            --header-fg: #0F1014;
+            --card-bg-color: #FFFFFF;
+            --input-bg-color: #EFEFEF;
+            --border-color: #DDDDDD;
+            --text-secondary: #555555;
+            --accent-color: #007aff;
+            --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #FFFFFF;
+            --background-color: #0F1014;
+            --header-bg: #1A1C22;
+            --header-fg: #FFFFFF;
+            --card-bg-color: #1A1C22;
+            --input-bg-color: #2a2a2a;
+            --border-color: #333333;
+            --text-secondary: #aaaaaa;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--body-font);
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            transition: background-color 0.3s, color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        #user-panel.page.active {
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        #user-panel-main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 90px;
+        }
+
+        #stream-page {
+            padding-bottom: 0;
+        }
+
+        #stream-page.page.active {
+            height: 100dvh;
+            flex-direction: column;
+        }
+
+        #stream-page header {
+            flex-shrink: 0;
+        }
+
+        #stream-page main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--header-bg);
+            color: var(--header-fg);
+            padding: 0 1rem;
+            height: 60px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        header .header-left,
+        header .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        header .Bahari-logo {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            user-select: none;
+        }
+
+        header .header-icon {
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            color: var(--header-fg);
+        }
+
+        header .profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--header-fg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        #auth-page {
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+            background-size: cover;
+            background-position: center center;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            box-sizing: border-box;
+            background-color: rgba(26, 28, 34, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #auth-page h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-toggle {
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #8e8e93;
+            pointer-events: none;
+        }
+
+        .input-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #auth-page .auth-form input {
+            background-color: #FFFFFF;
+            color: #0F1014;
+            border: none;
+            padding: 1rem 1rem 1rem 50px;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #auth-page .auth-form input.password-field {
+            padding-right: 50px;
+        }
+
+        #auth-page .auth-form input::placeholder {
+            color: #8e8e93;
+        }
+
+        .password-toggle-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .password-toggle-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: #555555;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .auth-form button {
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .error-message {
+            color: #ffdddd;
+            background-color: rgba(255, 56, 56, 0.2);
+            border: 1px solid #ff4757;
+            padding: 0.75rem;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .divider {
+            text-align: center;
+            color: #ccc;
+            margin: 1.2rem 0;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .divider::before, .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background-color: #555;
+        }
+        
+        .divider::before {
+            left: 0;
+        }
+        
+        .divider::after {
+            right: 0;
+        }
+        
+        .google-signin-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #FFFFFF;
+            color: #444;
+            border: 1px solid #DDDDDD;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .google-signin-btn:hover {
+            background-color: #f7f7f7;
+        }
+
+        #user-panel-header {
+            background-color: var(--background-color);
+            padding-bottom: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 0 1rem;
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            font-size: 1rem;
+            color: var(--primary-color);
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            border-color: var(--accent-color);
+        }
+
+        .hero-slider-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            position: relative;
+            background-color: #222;
+        }
+
+        .hero-slider-wrapper {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .hero-slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .hero-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .hero-slide-overlay {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 10%, transparent 90%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-slide-year {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        .hero-play-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-play-button svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .movie-section {
+            padding-top: 1.5rem;
+        }
+
+        .movie-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 1rem 1rem 1rem;
+        }
+
+        .movie-section-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .view-all-btn {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .movie-scroll-list {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 1rem;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .movie-scroll-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .movie-card {
+            flex: 0 0 45%;
+            max-width: 45%;
+            cursor: pointer;
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            background-color: var(--card-bg-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .movie-card-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+            background-color: #333;
+        }
+
+        .movie-card-info {
+            padding: 0.75rem;
+        }
+
+        .movie-card-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--primary-color);
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .search-results-grid .movie-card {
+            max-width: 100%;
+        }
+
+        .grid-page-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .grid-page-header a {
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .grid-page-header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1001;
+            border-top: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .bottom-nav {
+            background-color: rgba(26, 28, 34, 0.9);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            flex-grow: 1;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .nav-item svg {
+            width: 28px;
+            height: 28px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .nav-item.active svg {
+            fill: currentColor;
+        }
+
+        #search-page,
+        #category-page {
+            padding-bottom: 70px;
+        }
+
+        #search-page {
+            padding: 1rem;
+            padding-top: 70px;
+        }
+
+        .search-container {
+            position: sticky;
+            top: 60px;
+            background-color: var(--background-color);
+            padding: 1rem 0;
+            z-index: 99;
+        }
+
+        .search-bar {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background-color: var(--input-bg-color);
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        #category-page main {
+            padding: 1rem;
+        }
+
+        #category-page-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .category-grid-item {
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: var(--border-radius-md);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .category-grid-item span {
+            position: relative;
+            z-index: 2;
+            padding: 0.5rem;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .video-container>div,
+        .video-container iframe,
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .movie-details {
+            padding: 1rem 1.5rem;
+        }
+
+        .movie-details h1 {
+            font-size: 1.6rem;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .movie-details #stream-movie-year {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .movie-details #stream-movie-description {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .interaction-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .interaction-icon {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+        }
+
+        .interaction-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--primary-color);
+            stroke-width: 2;
+            fill: transparent;
+            transition: fill 0.2s ease, stroke 0.2s ease, color 0.2s ease;
+        }
+
+        .interaction-icon.active svg {
+            fill: var(--accent-color);
+            stroke: var(--accent-color);
+        }
+
+        .related-videos-container {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+        }
+
+        .related-videos-container h3 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .related-video-item {
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .related-video-item img {
+            width: 120px;
+            height: 67.5px;
+            border-radius: var(--border-radius-sm);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .related-video-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .related-video-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        #autoplay-countdown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #autoplay-countdown-number {
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        #autoplay-countdown-number.animate {
+            animation: countUp 1s ease-in-out;
+        }
+
+        @keyframes countUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .profile-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-popup-content {
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .profile-popup-content h2 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .profile-form input,
+        .profile-form button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-form input {
+            background-color: var(--input-bg-color);
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-form button {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .profile-movie-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem 0;
+        }
+
+        .profile-movie-list .movie-title {
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .profile-movie-list .remove-icon {
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        #profile-logout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .theme-switch-container,
+        .profile-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .theme-switch-container h3,
+        .profile-option h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-toggle {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px;
+        }
+
+        .slider-toggle:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider-toggle {
+            background-color: var(--accent-color);
+        }
+
+        input:checked+.slider-toggle:before {
+            transform: translateX(22px);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        .spinner svg {
+            width: 100%;
+            height: 100%;
+            animation: spin 2s linear infinite;
+        }
+
+        .spinner path {
+            animation: color-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes color-pulse {
+
+            0%,
+            100% {
+                stroke: #007aff;
+            }
+
+            25% {
+                stroke: #ff3b30;
+            }
+
+            50% {
+                stroke: #34c759;
+            }
+
+            75% {
+                stroke: #ff9500;
+            }
+        }
+
+        #age-verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+
+        .age-verification-box {
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            padding: 2.5rem 3rem;
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 450px;
+            transform: scale(0.95);
+            animation: popup-appear 0.3s ease-out forwards;
+        }
+
+        @keyframes popup-appear {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .age-verification-box h2 {
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .age-verification-box p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        #accept-age-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #accept-age-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        #admin-panel {
+            background-color: #0F1014;
+            color: #FFFFFF;
+        }
+
+        #admin-panel main {
+            padding: 1rem;
+        }
+
+        #admin-panel .upload-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-nav-tabs {
+            display: flex;
+            border-bottom: 1px solid #333333;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-tab-btn {
+            padding: 1rem 1.5rem;
+            color: #aaaaaa;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: bold;
+        }
+
+        .admin-tab-btn.active {
+            color: #FFFFFF;
+            border-bottom-color: var(--accent-color);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .upload-form input,
+        .upload-form textarea,
+        .upload-form select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #333333;
+            background-color: #2a2a2a;
+            color: #FFFFFF;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .upload-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FFFFFF;
+        }
+
+        .checkbox-container input {
+            width: auto;
+        }
+
+        .movie-list-item,
+        .category-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #333333;
+        }
+
+        .movie-list-item:last-child,
+        .category-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .movie-list-item img {
+            width: 120px;
+            height: 67.5px;
+            object-fit: cover;
+            border-radius: var(--border-radius-sm);
+            background-color: #ccc;
+        }
+
+        .movie-list-info,
+        .category-list-info {
+            flex-grow: 1;
+        }
+
+        .movie-list-info h3,
+        .category-list-info h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+        }
+
+        .movie-list-info p {
+            color: #aaaaaa;
+        }
+
+        .movie-list-actions,
+        .category-list-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .movie-list-actions span,
+        .category-list-actions span {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        #admin-panel header {
+            background-color: #1A1C22;
+            border-bottom-color: #333333;
+        }
+
+        #admin-panel header h1,
+        #admin-panel header .logout-btn {
+            color: white;
+        }
+
+        #admin-panel header .search-bar {
+            background-color: #2a2a2a;
+            color: #FFFFFF;
+        }
+
+        #admin-panel header .logout-btn {
+            border: 1px solid white;
+            padding: 8px 16px;
+            background-color: transparent;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+        }
+
+        #copy-toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        #copy-toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-spinner" class="spinner">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90" stroke-width="10" fill="none" stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1.5s" repeatCount="indefinite" />
+                <animate attributeName="stroke-dashoffset" from="283" to="0" dur="1.5s" repeatCount="indefinite" />
+            </path>
+        </svg>
+    </div>
+    <div id="age-verification-overlay" class="hidden">
+        <div class="age-verification-box">
+            <h2>এই অ্যাপ প্রবেশ করার জন্য আপনার বয়স অবশ্যই ১৮ বছর বা তার বেশি হতে হবে।</h2>
+            <button id="accept-age-btn">প্রবেশ করুন</button>
+        </div>
+    </div>
+
+    <section id="auth-page" class="page">
+        <div class="auth-container">
+            <div id="login-view">
+                <h1>Login</h1>
+                <form id="login-form" class="auth-form">
+                    <p id="login-error" class="error-message hidden"></p>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg></span>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg></span>
+                        <input type="password" id="login-password" name="password" class="password-field" placeholder="Password" required>
+                        <span class="password-toggle-icon" id="login-toggle-icon"></span>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <div class="divider">OR</div>
+                <button type="button" id="google-signin-btn-login" class="google-signin-btn">
+                    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.8427 2.0782-1.7772 2.7218v2.2582h2.9082c1.7018-1.5664 2.6836-3.8736 2.6836-6.621z" fill="#4285F4"></path><path d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1818l-2.9082-2.2582c-.8064.5427-1.8409.8618-3.0482.8618-2.3455 0-4.3291-1.5818-5.0355-3.7109H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"></path><path d="M3.9645 10.71c-.1818-.5427-.2827-1.1164-.2827-1.71s.1009-1.1673.2827-1.71V4.9582H.9573C.3473 6.1732 0 7.5477 0 9s.3473 2.8268.9573 4.0418L3.9645 10.71z" fill="#FBBC05"></path><path d="M9 3.5455c1.3218 0 2.5073.4555 3.4409 1.3464l2.5818-2.5818C13.4636.8918 11.43 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9645 7.29C4.6709 5.1609 6.6545 3.5455 9 3.5455z" fill="#EA4335"></path></g></svg>
+                    <span>Sign in with Google</span>
+                </button>
+                <p class="auth-toggle" onclick="app.toggleAuthView(false)">Don't have an account? Register</p>
+            </div>
+            <div id="register-view" class="hidden">
+                <h1>Register</h1>
+                <form id="register-form" class="auth-form">
+                    <p id="register-error" class="error-message hidden"></p>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg></span>
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg></span>
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <p id="register-email-error" class="error-message hidden"></p>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg></span>
+                        <input type="tel" name="phone" placeholder="Mobile Number (e.g., +91...)" required>
+                    </div>
+                    <p id="register-phone-error" class="error-message hidden"></p>
+                    <div class="input-container">
+                        <span class="input-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg></span>
+                        <input type="password" id="register-password" name="password" class="password-field" placeholder="Password" required>
+                        <span class="password-toggle-icon" id="register-toggle-icon"></span>
+                    </div>
+                    <button type="submit">Register</button>
+                </form>
+                <div class="divider">OR</div>
+                <button type="button" id="google-signin-btn-register" class="google-signin-btn">
+                    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.8427 2.0782-1.7772 2.7218v2.2582h2.9082c1.7018-1.5664 2.6836-3.8736 2.6836-6.621z" fill="#4285F4"></path><path d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1818l-2.9082-2.2582c-.8064.5427-1.8409.8618-3.0482.8618-2.3455 0-4.3291-1.5818-5.0355-3.7109H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"></path><path d="M3.9645 10.71c-.1818-.5427-.2827-1.1164-.2827-1.71s.1009-1.1673.2827-1.71V4.9582H.9573C.3473 6.1732 0 7.5477 0 9s.3473 2.8268.9573 4.0418L3.9645 10.71z" fill="#FBBC05"></path><path d="M9 3.5455c1.3218 0 2.5073.4555 3.4409 1.3464l2.5818-2.5818C13.4636.8918 11.43 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9645 7.29C4.6709 5.1609 6.6545 3.5455 9 3.5455z" fill="#EA4335"></path></g></svg>
+                    <span>Sign up with Google</span>
+                </button>
+                <p class="auth-toggle" onclick="app.toggleAuthView(true)">Already have an account? Login</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="admin-panel" class="page">
+        <header>
+            <div class="header-left">
+                <h1 style="font-size: 1.5rem; margin: 0;">Admin Panel</h1>
+            </div>
+            <div class="header-right"><button id="admin-logout-btn" class="logout-btn">Logout</button></div>
+        </header>
+        <main>
+            <nav class="admin-nav-tabs">
+                <div class="admin-tab-btn active" data-tab="movies">Movies</div>
+                <div class="admin-tab-btn" data-tab="categories">Categories</div>
+                <div class="admin-tab-btn" data-tab="settings">Settings</div>
+            </nav>
+
+            <div id="admin-tab-movies" class="admin-tab-content active">
+                <div class="upload-card">
+                    <h2>Movie Details</h2>
+                    <form id="upload-form" class="upload-form">
+                        <input type="hidden" id="movie-id-field">
+                        <input type="text" id="vimeo-url" placeholder="Video: R2 Filename or Full URL" required>
+                        <input type="text" id="thumbnail-url" placeholder="Thumbnail: R2 Filename or ImgBB Link" required>
+                        <input type="text" id="movie-title" placeholder="Movie Title" required>
+                        <select id="movie-category" required>
+                            <option value="" disabled selected>Select Category</option>
+                        </select>
+                        <input type="text" id="movie-date" placeholder="Release Year" required>
+                        <textarea id="movie-description" placeholder="Description" required></textarea>
+                        <div class="checkbox-container"><input type="checkbox" id="add-to-slider"><label for="add-to-slider">Hero Slider-এ যোগ করুন</label></div>
+                        <button type="submit">Save Movie</button>
+                    </form>
+                </div>
+                <input type="text" id="admin-search-bar" class="search-bar" placeholder="Search movies..." style="margin-bottom: 1rem;">
+                <div id="admin-movie-list"></div>
+            </div>
+
+            <div id="admin-tab-categories" class="admin-tab-content">
+                <div class="upload-card">
+                    <h2>Manage Categories</h2>
+                    <form id="category-form" class="upload-form">
+                        <input type="hidden" id="category-id-field">
+                        <input type="text" id="category-name-input" placeholder="Category Name" required>
+                        <input type="text" id="category-image-url" placeholder="Category Image: R2 Filename or ImgBB Link" required>
+                        <button type="submit" id="category-submit-btn">Add Category</button>
+                    </form>
+                </div>
+                <div id="category-list"></div>
+            </div>
+
+            <div id="admin-tab-settings" class="admin-tab-content">
+                <div class="upload-card">
+                    <h2>Manage Backgrounds</h2>
+                    <form id="background-form" class="upload-form">
+                        <input type="text" id="login-bg-url" placeholder="Login BG: R2 Filename or ImgBB Link">
+                        <input type="text" id="register-bg-url" placeholder="Register BG: R2 Filename or ImgBB Link">
+                        <button type="submit">Save Backgrounds</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <section id="user-panel" class="page">
+        <div id="user-panel-header">
+            <header>
+                <div class="header-left"><span class="Bahari-logo">BaHari</span></div>
+                <div class="header-right">
+                    <svg id="share-app-btn" class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    <div id="profile-icon-btn" class="profile-icon"><span>&#128100;</span></div>
+                </div>
+            </header>
+            <nav id="category-tabs-container" class="category-tabs"></nav>
+        </div>
+        <main id="user-panel-main"></main>
+        <footer class="bottom-nav">
+            <div class="nav-item active" id="nav-home">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-category">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Category</span>
+            </div>
+            <div class="nav-item" id="nav-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Search</span>
+            </div>
+        </footer>
+    </section>
+
+    <section id="category-page" class="page">
+        <header>
+            <h1 style="font-size: 1.5rem; margin: 0 auto;">Categories</h1>
+        </header>
+        <main>
+            <div id="category-page-grid"></div>
+        </main>
+        <footer class="bottom-nav">
+            <div class="nav-item" id="nav-home-cat">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </div>
+            <div class="nav-item active" id="nav-category-cat">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Category</span>
+            </div>
+            <div class="nav-item" id="nav-search-cat">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Search</span>
+            </div>
+        </footer>
+    </section>
+
+    <section id="search-page" class="page">
+        <header>
+            <h1 style="font-size: 1.5rem; margin: 0 auto;">Search</h1>
+        </header>
+        <div class="search-container">
+            <input type="text" id="user-search-bar" class="search-bar" placeholder="Search movies...">
+        </div>
+        <main id="search-results-container"></main>
+        <footer class="bottom-nav">
+            <div class="nav-item" id="nav-home-search">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-category-search">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Category</span>
+            </div>
+            <div class="nav-item active" id="nav-search-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Search</span>
+            </div>
+        </footer>
+    </section>
+
+    <section id="stream-page" class="page">
+        <header>
+            <div class="header-left"><a id="back-to-home" class="back-arrow" style="font-size: 2rem; color: var(--primary-color); text-decoration: none; padding: 0 10px;">&larr;</a></div>
+            <h1 id="stream-movie-title-header" style="color: var(--primary-color); font-size: 1.2rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%;"></h1>
+            <div class="header-right" style="width: 40px;"></div>
+        </header>
+        <main>
+            <div id="video-player-wrapper" class="video-container">
+                <div id="autoplay-countdown-overlay" class="hidden">
+                    <span id="autoplay-countdown-number"></span>
+                </div>
+            </div>
+            <div class="movie-details">
+                <h1 id="stream-movie-title"></h1>
+                <p id="stream-movie-year"></p>
+                <div class="interaction-bar">
+                    <div id="like-btn" class="interaction-icon" data-movie-id=""><svg viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg></div>
+                    <div id="watchlist-btn" class="interaction-icon" data-movie-id=""><svg viewBox="0 0 24 24">
+                            <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" />
+                        </svg></div>
+                    <div id="autoplay-btn" class="interaction-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12A10 10 0 1 0 12 2v2" />
+                            <path d="M12 22v-2" />
+                            <path d="m15.54 18.5-1.08-1.08" />
+                            <path d="m5.46 9.5-1.08-1.08" />
+                            <path d="M22 12h-2" />
+                            <path d="M4 12H2" />
+                            <path d="m18.5 5.46-1.08 1.08" />
+                            <path d="M9.5 18.54 8.42 19.62" />
+                            <path d="M12 6V4" />
+                            <path d="m12 13-4-4 6-6" />
+                        </svg></div>
+                </div>
+                <p id="stream-movie-description"></p>
+            </div>
+            <div id="related-videos-container" class="related-videos-container"></div>
+        </main>
+    </section>
+
+    <div id="profile-popup" class="profile-popup hidden">
+        <div class="profile-popup-content">
+            <span style="float: right; cursor: pointer; font-size: 1.5rem;" onclick="document.getElementById('profile-popup').classList.add('hidden')">&times;</span>
+            <h2>Profile</h2>
+            <div class="profile-section">
+                <div class="theme-switch-container">
+                    <h3>Dark Mode</h3>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+                <div class="profile-option" id="privacy-policy-btn" style="cursor: pointer;">
+                    <h3>Privacy Policy</h3>
+                    <span>&rarr;</span>
+                </div>
+            </div>
+            <div class="profile-section">
+                <h3>Change Name</h3>
+                <form id="name-form" class="profile-form"><input type="text" id="name-input" placeholder="New name"><button type="submit">Save</button></form>
+            </div>
+            <div class="profile-section">
+                <h3>Liked Movies</h3>
+                <ul id="liked-movies-list" class="profile-movie-list"></ul>
+            </div>
+            <div class="profile-section">
+                <h3>Watchlist</h3>
+                <ul id="watchlist-movies-list" class="profile-movie-list"></ul>
+            </div>
+            <button id="profile-logout-btn">Logout</button>
+        </div>
+    </div>
+    <div id="copy-toast" class="hidden"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged,
+            GoogleAuthProvider,
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            push,
+            remove,
+            onValue,
+            update
+        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAs82Or7bJPuBE3A_QmRAz18CkRb9iKRZE",
+            authDomain: "bahari-52fdb.firebaseapp.com",
+            projectId: "bahari-52fdb",
+            storageBucket: "bahari-52fdb.firebasestorage.app",
+            messagingSenderId: "89195698661",
+            appId: "1:89195698661:web:b8fa8277a2103da37b370c",
+            measurementId: "G-SG95J2VS7G"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        const R2_PUBLIC_URL = "https://pub-1c1ee5cfcd4e4f979f7b377f41190793.r2.dev";
+        const SHARE_LINK = "https://play.google.com/store/apps/details?id=adarsha.bornolipi.in";
+
+        let currentUser = null,
+            currentUserData = null,
+            allMovies = {},
+            allCategories = {},
+            heroSliderInterval;
+        const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZAh0PSI5IiB2aWV3Qm94PSIwIDAgMTYgOSI+PHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjkiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI4IiB5PSI1LjUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjJweCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZiI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+';
+
+        let movieAppInstance;
+        let isAppInitialized = false;
+
+        function initializeAppOnce() {
+            if (isAppInitialized) return;
+            isAppInitialized = true;
+            movieAppInstance = new MovieApp();
+            movieAppInstance.init();
+            window.app = movieAppInstance;
+        }
+
+        window.onYouTubeIframeAPIReady = () => initializeAppOnce();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.YT && window.YT.Player) {
+                initializeAppOnce();
+            }
+        });
+
+        class MovieApp {
+            constructor() {
+                this.youtubePlayer = null;
+                this.vimeoPlayer = null;
+                this.countdownInterval = null;
+                this.currentStream = {
+                    movieId: null,
+                    categoryId: null
+                };
+                this.streamEntryPointPage = 'user-panel';
+                this.isAutoplayEnabled = true;
+                this.siteSettings = {};
+                this.showIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+                this.hideIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94L1 1l1.41-1.41L21.59 21.59 23 23"></path><path d="M12 4.5c1.7 0 3.32.55 4.67 1.5l-1.6.8a4 4 0 0 0-5.57-5.57l-.8-1.6A9.9 9.9 0 0 1 12 4.5z"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+                this.cacheDom();
+                this.applyInitialTheme();
+                this.initEventListeners();
+            }
+            init() {
+                this.listenForSettings();
+                this.handleAuthStateChange();
+            }
+            cacheDom() {
+                this.dom = {
+                    pages: document.querySelectorAll('.page'),
+                    authPage: document.getElementById('auth-page'),
+                    spinner: document.getElementById('loading-spinner'),
+                    loginView: document.getElementById('login-view'),
+                    registerView: document.getElementById('register-view'),
+                    loginForm: document.getElementById('login-form'),
+                    registerForm: document.getElementById('register-form'),
+                    loginError: document.getElementById('login-error'),
+                    registerError: document.getElementById('register-error'),
+                    registerEmailError: document.getElementById('register-email-error'),
+                    registerPhoneError: document.getElementById('register-phone-error'),
+                    googleSignInBtnLogin: document.getElementById('google-signin-btn-login'),
+                    googleSignInBtnRegister: document.getElementById('google-signin-btn-register'),
+                    adminLogoutBtn: document.getElementById('admin-logout-btn'),
+                    uploadForm: document.getElementById('upload-form'),
+                    adminMovieList: document.getElementById('admin-movie-list'),
+                    adminSearchBar: document.getElementById('admin-search-bar'),
+                    profileIconBtn: document.getElementById('profile-icon-btn'),
+                    profileLogoutBtn: document.getElementById('profile-logout-btn'),
+                    profilePopup: document.getElementById('profile-popup'),
+                    backToHomeBtn: document.getElementById('back-to-home'),
+                    videoPlayerWrapper: document.getElementById('video-player-wrapper'),
+                    streamMovieTitleHeader: document.getElementById('stream-movie-title-header'),
+                    streamMovieTitle: document.getElementById('stream-movie-title'),
+                    streamMovieYear: document.getElementById('stream-movie-year'),
+                    streamMovieDescription: document.getElementById('stream-movie-description'),
+                    likeBtn: document.getElementById('like-btn'),
+                    watchlistBtn: document.getElementById('watchlist-btn'),
+                    nameForm: document.getElementById('name-form'),
+                    nameInput: document.getElementById('name-input'),
+                    likedMoviesList: document.getElementById('liked-movies-list'),
+                    watchlistMoviesList: document.getElementById('watchlist-movies-list'),
+                    categoryForm: document.getElementById('category-form'),
+                    categoryList: document.getElementById('category-list'),
+                    categoryIdField: document.getElementById('category-id-field'),
+                    categoryNameInput: document.getElementById('category-name-input'),
+                    categoryImageUrlInput: document.getElementById('category-image-url'),
+                    categorySubmitBtn: document.getElementById('category-submit-btn'),
+                    movieCategorySelect: document.getElementById('movie-category'),
+                    addToSliderCheckbox: document.getElementById('add-to-slider'),
+                    ageVerificationOverlay: document.getElementById('age-verification-overlay'),
+                    acceptAgeBtn: document.getElementById('accept-age-btn'),
+                    backgroundForm: document.getElementById('background-form'),
+                    loginBgUrlInput: document.getElementById('login-bg-url'),
+                    registerBgUrlInput: document.getElementById('register-bg-url'),
+                    loginPasswordInput: document.getElementById('login-password'),
+                    loginToggleIcon: document.getElementById('login-toggle-icon'),
+                    registerPasswordInput: document.getElementById('register-password'),
+                    registerToggleIcon: document.getElementById('register-toggle-icon'),
+                    userPanelMain: document.getElementById('user-panel-main'),
+                    categoryTabsContainer: document.getElementById('category-tabs-container'),
+                    userSearchBar: document.getElementById('user-search-bar'),
+                    searchResultsContainer: document.getElementById('search-results-container'),
+                    categoryPageGrid: document.getElementById('category-page-grid'),
+                    navButtons: document.querySelectorAll('.nav-item'),
+                    themeToggle: document.getElementById('theme-toggle'),
+                    relatedVideosContainer: document.getElementById('related-videos-container'),
+                    autoplayBtn: document.getElementById('autoplay-btn'),
+                    adminNavTabs: document.querySelectorAll('.admin-tab-btn'),
+                    adminTabContents: document.querySelectorAll('.admin-tab-content'),
+                    shareAppBtn: document.getElementById('share-app-btn'),
+                    copyToast: document.getElementById('copy-toast'),
+                    privacyPolicyBtn: document.getElementById('privacy-policy-btn'),
+                };
+            }
+            initEventListeners() {
+                this.dom.loginForm.addEventListener('submit', this.handleLogin.bind(this));
+                this.dom.registerForm.addEventListener('submit', this.handleRegister.bind(this));
+                this.dom.googleSignInBtnLogin.addEventListener('click', this.handleGoogleSignIn.bind(this));
+                this.dom.googleSignInBtnRegister.addEventListener('click', this.handleGoogleSignIn.bind(this));
+                this.dom.adminLogoutBtn.addEventListener('click', this.handleLogout.bind(this));
+                this.dom.profileLogoutBtn.addEventListener('click', this.handleLogout.bind(this));
+                this.dom.categoryForm.addEventListener('submit', this.handleSaveCategory.bind(this));
+                this.dom.categoryList.addEventListener('click', this.handleCategoryActions.bind(this));
+                this.dom.uploadForm.addEventListener('submit', this.handleSaveMovie.bind(this));
+                this.dom.adminSearchBar.addEventListener('input', () => this.renderAdminMovies(this.dom.adminSearchBar.value));
+                this.dom.profileIconBtn.addEventListener('click', this.toggleProfilePopup.bind(this));
+                this.dom.backToHomeBtn.addEventListener('click', () => {
+                    this.destroyPlayers();
+                    this.showPage(this.streamEntryPointPage || 'user-panel');
+                });
+                this.dom.likeBtn.addEventListener('click', () => this.toggleUserMovieInteraction('likedMovies', this.dom.likeBtn.dataset.movieId));
+                this.dom.watchlistBtn.addEventListener('click', () => this.toggleUserMovieInteraction('watchlist', this.dom.watchlistBtn.dataset.movieId));
+                this.dom.nameForm.addEventListener('submit', this.handleNameChange.bind(this));
+                this.dom.likedMoviesList.addEventListener('click', this.handleProfileMovieClick.bind(this));
+                this.dom.watchlistMoviesList.addEventListener('click', this.handleProfileMovieClick.bind(this));
+                this.dom.acceptAgeBtn.addEventListener('click', this.handleAgeVerification.bind(this));
+                this.dom.backgroundForm.addEventListener('submit', this.handleSaveBackgrounds.bind(this));
+                this.dom.loginToggleIcon.addEventListener('click', () => this.togglePasswordVisibility('login'));
+                this.dom.registerToggleIcon.addEventListener('click', () => this.togglePasswordVisibility('register'));
+                this.dom.loginToggleIcon.innerHTML = this.showIconSvg;
+                this.dom.registerToggleIcon.innerHTML = this.showIconSvg;
+                this.dom.categoryTabsContainer.addEventListener('click', this.handleCategoryTabClick.bind(this));
+                this.dom.userSearchBar.addEventListener('input', () => this.renderSearchResults(this.dom.userSearchBar.value));
+                this.dom.navButtons.forEach(btn => btn.addEventListener('click', (e) => this.handleNavigation(e)));
+                this.dom.themeToggle.addEventListener('change', this.handleThemeToggle.bind(this));
+                document.body.addEventListener('click', this.handleBodyClick.bind(this));
+                this.dom.autoplayBtn.addEventListener('click', this.toggleAutoplay.bind(this));
+                this.dom.adminNavTabs.forEach(tab => tab.addEventListener('click', () => this.handleAdminTabClick(tab.dataset.tab)));
+                this.dom.shareAppBtn.addEventListener('click', this.handleShareApp.bind(this));
+                this.dom.privacyPolicyBtn.addEventListener('click', () => window.open('https://sites.google.com/view/bangla-status-and-shairi/%E0%A6%B9%E0%A6%AE', '_blank'));
+            }
+
+            getFullUrl(filename) {
+                if (!filename) return '';
+                if (filename.startsWith('http')) return filename;
+                return `${R2_PUBLIC_URL}/${filename}`;
+            }
+            applyInitialTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                document.body.dataset.theme = savedTheme;
+                this.dom.themeToggle.checked = savedTheme === 'dark';
+                this.isAutoplayEnabled = localStorage.getItem('autoplay') !== 'false';
+                this.dom.autoplayBtn.classList.toggle('active', this.isAutoplayEnabled);
+            }
+            toggleAutoplay() {
+                this.isAutoplayEnabled = !this.isAutoplayEnabled;
+                localStorage.setItem('autoplay', this.isAutoplayEnabled);
+                this.dom.autoplayBtn.classList.toggle('active', this.isAutoplayEnabled);
+            }
+            handleThemeToggle() {
+                const newTheme = this.dom.themeToggle.checked ? 'dark' : 'light';
+                document.body.dataset.theme = newTheme;
+                localStorage.setItem('theme', newTheme);
+            }
+            renderHeroSlider(movies) {
+                const container = document.createElement('div');
+                container.className = 'hero-slider-container';
+                const sliderMovies = movies.filter(([id, movie]) => movie.addToSlider);
+                if (sliderMovies.length === 0) {
+                    container.classList.add('hidden');
+                    return container;
+                }
+                container.innerHTML = `<div class="hero-slider-wrapper"></div>`;
+                const wrapper = container.querySelector('.hero-slider-wrapper');
+                sliderMovies.slice(0, 10).forEach(([movieId, movieData]) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'hero-slide';
+                    slide.dataset.movieId = movieId;
+                    slide.innerHTML = `<img src="${this.getFullUrl(movieData.thumbnailUrl)}" onerror="this.onerror=null;this.src='${placeholderImage}';"><div class="hero-slide-overlay"><span class="hero-slide-year">${movieData.date}</span><span class="hero-play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg> Play</span></div>`;
+                    wrapper.appendChild(slide);
+                });
+                if (heroSliderInterval) clearInterval(heroSliderInterval);
+                if (sliderMovies.length > 1) {
+                    let currentIndex = 0;
+                    heroSliderInterval = setInterval(() => {
+                        currentIndex = (currentIndex + 1) % sliderMovies.length;
+                        wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    }, 6000);
+                }
+                return container;
+            }
+            handleNavigation(e) {
+                const targetId = e.currentTarget.id;
+                if (targetId.includes('home')) this.showPage('user-panel');
+                else if (targetId.includes('category')) this.showPage('category-page');
+                else if (targetId.includes('search')) {
+                    this.showPage('search-page');
+                    this.dom.userSearchBar.focus();
+                }
+            }
+            togglePasswordVisibility(formType) {
+                const input = (formType === 'login') ? this.dom.loginPasswordInput : this.dom.registerPasswordInput;
+                const icon = (formType === 'login') ? this.dom.loginToggleIcon : this.dom.registerToggleIcon;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.innerHTML = this.hideIconSvg;
+                } else {
+                    input.type = 'password';
+                    icon.innerHTML = this.showIconSvg;
+                }
+            }
+            showSpinner() {
+                this.dom.spinner.classList.remove('hidden');
+            }
+            hideSpinner() {
+                this.dom.spinner.classList.add('hidden');
+            }
+            showPage(pageId) {
+                const currentPage = document.querySelector('.page.active');
+                if (pageId === 'stream-page' && currentPage && currentPage.id !== 'stream-page') {
+                    this.streamEntryPointPage = currentPage.id;
+                }
+                if (pageId !== 'stream-page') {
+                    this.destroyPlayers();
+                }
+                if (pageId === 'user-panel') this.renderUserHomePage();
+                if (currentPage) this.previousPage = currentPage.id;
+                this.dom.pages.forEach(p => p.classList.toggle('active', p.id === pageId));
+                document.querySelector('#stream-page main, #user-panel-main').scrollTop = 0;
+                window.scrollTo(0, 0);
+            }
+            listenForSettings() {
+                onValue(ref(db, 'site_settings'), (snapshot) => {
+                    this.siteSettings = snapshot.val() || {};
+                    const isLoginView = !this.dom.loginView.classList.contains('hidden');
+                    this.applyBackground(isLoginView);
+                    if (currentUserData && currentUserData.role === 'admin') {
+                        this.dom.loginBgUrlInput.value = this.siteSettings.loginBackgroundUrl || '';
+                        this.dom.registerBgUrlInput.value = this.siteSettings.registerBackgroundUrl || '';
+                    }
+                });
+            }
+            applyBackground(isLoginView) {
+                const bgFileName = isLoginView ? this.siteSettings.loginBackgroundUrl : this.siteSettings.registerBackgroundUrl;
+                this.dom.authPage.style.backgroundImage = bgFileName ? `url(${this.getFullUrl(bgFileName)})` : 'none';
+            }
+            toggleAuthView(showLogin) {
+                this.dom.loginError.classList.add('hidden');
+                this.dom.registerError.classList.add('hidden');
+                this.dom.registerEmailError.classList.add('hidden');
+                this.dom.registerPhoneError.classList.add('hidden');
+                this.dom.loginView.classList.toggle('hidden', !showLogin);
+                this.dom.registerView.classList.toggle('hidden', showLogin);
+                this.applyBackground(showLogin);
+            }
+            handleAuthStateChange() {
+                onAuthStateChanged(auth, async (user) => {
+                    if (!navigator.onLine) {
+                        this.dom.spinner.classList.add('offline-spinner');
+                        return;
+                    }
+                    this.showSpinner();
+                    if (user) {
+                        const snap = await get(ref(db, `users/${user.uid}`));
+                        if (snap.exists()) {
+                            currentUser = user;
+                            currentUserData = snap.val();
+                            this.dom.ageVerificationOverlay.classList.add('hidden');
+                            this.initAppForUser();
+                        } else {
+                            // This case handles new Google Sign-In users who were just created but whose
+                            // onAuthStateChanged might fire before their DB record is fully available.
+                            // A small delay and retry can help.
+                            setTimeout(async () => {
+                                const delayedSnap = await get(ref(db, `users/${user.uid}`));
+                                if (delayedSnap.exists()){
+                                    currentUser = user;
+                                    currentUserData = delayedSnap.val();
+                                    this.dom.ageVerificationOverlay.classList.add('hidden');
+                                    this.initAppForUser();
+                                } else {
+                                     this.handleLogout();
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        currentUser = null;
+                        currentUserData = null;
+                        if (sessionStorage.getItem('isAgeVerified')) {
+                            this.showPage('auth-page');
+                            this.toggleAuthView(true);
+                        } else {
+                            this.dom.pages.forEach(p => p.classList.remove('active'));
+                            this.dom.ageVerificationOverlay.classList.remove('hidden');
+                        }
+                    }
+                    this.hideSpinner();
+                });
+            }
+            handleAgeVerification() {
+                sessionStorage.setItem('isAgeVerified', 'true');
+                this.dom.ageVerificationOverlay.classList.add('hidden');
+                this.showPage('auth-page');
+                this.toggleAuthView(true);
+            }
+            async handleLogin(e) {
+                e.preventDefault();
+                this.showSpinner();
+                this.dom.loginError.classList.add('hidden');
+                try {
+                    await signInWithEmailAndPassword(auth, this.dom.loginForm.email.value, this.dom.loginPasswordInput.value);
+                } catch (error) {
+                    let message = "An error occurred.";
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                        case 'auth/invalid-credential':
+                            message = "Incorrect email or password.";
+                            break;
+                    }
+                    this.dom.loginError.textContent = message;
+                    this.dom.loginError.classList.remove('hidden');
+                } finally {
+                    this.hideSpinner();
+                }
+            }
+            async handleRegister(e) {
+                e.preventDefault();
+                const form = this.dom.registerForm;
+                let name = form.name.value.trim(),
+                    email = form.email.value.trim(),
+                    phone = form.phone.value.trim(),
+                    password = this.dom.registerPasswordInput.value;
+                this.dom.registerEmailError.classList.add('hidden');
+                this.dom.registerPhoneError.classList.add('hidden');
+                this.dom.registerError.classList.add('hidden');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    this.dom.registerEmailError.textContent = "Please enter a valid email.";
+                    this.dom.registerEmailError.classList.remove('hidden');
+                    return;
+                }
+                if (!/^(?:\+91)?[6-9]\d{9}$/.test(phone)) {
+                    this.dom.registerPhoneError.textContent = "Please enter a valid Indian mobile number.";
+                    this.dom.registerPhoneError.classList.remove('hidden');
+                    return;
+                }
+                if (phone.length === 10) phone = '+91' + phone;
+                this.showSpinner();
+                try {
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    await set(ref(db, `users/${cred.user.uid}`), {
+                        name,
+                        email,
+                        phoneNumber: phone,
+                        role: 'user'
+                    });
+                } catch (error) {
+                    let message = "Registration failed.";
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            message = "This email is already registered.";
+                            break;
+                        case 'auth/weak-password':
+                            message = "Password must be at least 6 characters.";
+                            break;
+                    }
+                    this.dom.registerError.textContent = message;
+                    this.dom.registerError.classList.remove('hidden');
+                } finally {
+                    this.hideSpinner();
+                }
+            }
+            async handleGoogleSignIn() {
+                this.showSpinner();
+                this.dom.loginError.classList.add('hidden');
+                this.dom.registerError.classList.add('hidden');
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    const user = result.user;
+                    // Check if user exists in our DB, if not, create them
+                    const userRef = ref(db, `users/${user.uid}`);
+                    const snapshot = await get(userRef);
+                    if (!snapshot.exists()) {
+                        await set(userRef, {
+                            name: user.displayName || 'Google User',
+                            email: user.email,
+                            role: 'user',
+                            // Note: phoneNumber is not provided by Google Auth
+                        });
+                    }
+                    // onAuthStateChanged will handle the rest
+                } catch (error) {
+                    console.error("Google Sign-In Error:", error);
+                    let message = "Failed to sign in with Google. Please try again.";
+                    if (error.code === 'auth/popup-blocked') {
+                        message = "Popup was blocked by the browser. Please allow popups for this site.";
+                    } else if (error.code === 'auth/cancelled-popup-request') {
+                        // Don't show an error if the user just closed the window
+                        message = "";
+                    }
+                    if (message){
+                        this.dom.loginError.textContent = message;
+                        this.dom.loginError.classList.remove('hidden');
+                        this.dom.registerError.textContent = message;
+                        this.dom.registerError.classList.remove('hidden');
+                    }
+                } finally {
+                    this.hideSpinner();
+                }
+            }
+            handleLogout() {
+                sessionStorage.removeItem('isAgeVerified');
+                signOut(auth);
+                this.dom.profilePopup.classList.add('hidden');
+            }
+            initAppForUser() {
+                onValue(ref(db, 'movies'), s => {
+                    allMovies = s.val() || {};
+                    if (currentUserData.role === 'user') this.renderUserHomePage();
+                    else this.renderAdminMovies();
+                });
+                onValue(ref(db, 'categories'), s => {
+                    allCategories = s.val() || {};
+                    this.renderAdminCategories();
+                    if (currentUserData.role === 'user') this.renderUserCategoryTabs();
+                });
+                onValue(ref(db, `users/${currentUser.uid}`), s => {
+                    currentUserData = s.val() || {};
+                    if (!this.dom.profilePopup.classList.contains('hidden')) this.populateProfileLists();
+                    this.updateInteractionIcons();
+                });
+                if (currentUserData.role === 'admin') {
+                    this.dom.loginBgUrlInput.value = this.siteSettings.loginBackgroundUrl || '';
+                    this.dom.registerBgUrlInput.value = this.siteSettings.registerBackgroundUrl || '';
+                }
+                this.showPage(currentUserData.role === 'admin' ? 'admin-panel' : 'user-panel');
+            }
+            handleBodyClick(e) {
+                const movieCard = e.target.closest('.movie-card, .hero-slide, .related-video-item');
+                const viewAllBtn = e.target.closest('.view-all-btn');
+                const backFromGridBtn = e.target.closest('.back-from-grid');
+                if (movieCard && movieCard.dataset.movieId) {
+                    this.showStreamPage(movieCard.dataset.movieId);
+                    return;
+                }
+                if (viewAllBtn) {
+                    const {
+                        categoryId,
+                        categoryName
+                    } = viewAllBtn.dataset;
+                    const moviesArray = Object.entries(allMovies).reverse();
+                    let moviesToShow = (categoryId === 'latest') ? moviesArray : moviesArray.filter(([id, movie]) => movie.category === categoryId);
+                    this.renderMovieGridPage(categoryName, moviesToShow);
+                    return;
+                }
+                if (backFromGridBtn) {
+                    e.preventDefault();
+                    this.renderUserHomePage();
+                    return;
+                }
+            }
+            renderUserHomePage() {
+                const mainContainer = this.dom.userPanelMain;
+                mainContainer.innerHTML = '';
+                const moviesArray = Object.entries(allMovies).reverse();
+                if (moviesArray.length === 0) {
+                    mainContainer.innerHTML = '<p style="text-align: center; margin-top: 2rem;">No movies available yet.</p>';
+                    return;
+                }
+                mainContainer.appendChild(this.renderHeroSlider(moviesArray));
+                mainContainer.appendChild(this.createMovieSection('Latest Videos', moviesArray.slice(0, 10), 'latest'));
+                for (const catId in allCategories) {
+                    const categoryMovies = moviesArray.filter(([id, movie]) => movie.category === catId);
+                    if (categoryMovies.length > 0) mainContainer.appendChild(this.createMovieSection(allCategories[catId].name, categoryMovies, catId));
+                }
+            }
+            createMovieSection(title, movies, categoryId) {
+                const section = document.createElement('div');
+                section.className = 'movie-section';
+                section.innerHTML = `<div class="movie-section-header"><h2 class="movie-section-title">${title}</h2><span class="view-all-btn" data-category-id="${categoryId}" data-category-name="${title}">View All</span></div>`;
+                const scrollList = document.createElement('div');
+                scrollList.className = 'movie-scroll-list';
+                movies.forEach(([key, data]) => scrollList.appendChild(this.renderUserMovieCard(key, data)));
+                section.appendChild(scrollList);
+                return section;
+            }
+            renderMovieGridPage(title, moviesToShow) {
+                const mainContainer = this.dom.userPanelMain;
+                mainContainer.innerHTML = `<div class="grid-page-header"><a class="back-from-grid" href="#">&larr;</a><h1>${title}</h1></div>`;
+                const grid = document.createElement('div');
+                grid.className = 'search-results-grid';
+                if (moviesToShow.length > 0) {
+                    moviesToShow.forEach(([key, value]) => grid.appendChild(this.renderUserMovieCard(key, value)));
+                } else {
+                    grid.innerHTML = '<p>No videos in this section.</p>';
+                }
+                mainContainer.appendChild(grid);
+            }
+            renderUserMovieCard(key, data) {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.dataset.movieId = key;
+                card.innerHTML = `<img src="${this.getFullUrl(data.thumbnailUrl)}" class="movie-card-thumbnail" onerror="this.onerror=null;this.src='${placeholderImage}';"><div class="movie-card-info"><h3>${data.title}</h3></div>`;
+                return card;
+            }
+            renderSearchResults(searchTerm) {
+                const container = this.dom.searchResultsContainer;
+                container.innerHTML = '';
+                const lowerTerm = searchTerm.toLowerCase().trim();
+                if (!lowerTerm) {
+                    container.innerHTML = '<p style="text-align:center; color: var(--text-secondary);">Search for movies...</p>';
+                    return;
+                }
+                const results = Object.entries(allMovies).filter(([key, value]) => value.title.toLowerCase().includes(lowerTerm));
+                if (results.length > 0) {
+                    const grid = document.createElement('div');
+                    grid.className = 'search-results-grid';
+                    results.forEach(([key, value]) => grid.appendChild(this.renderUserMovieCard(key, value)));
+                    container.appendChild(grid);
+                } else {
+                    container.innerHTML = `<p style="text-align:center; color: var(--text-secondary);">No results for "${searchTerm}"</p>`;
+                }
+            }
+            renderUserCategoryTabs() {
+                const container = this.dom.categoryTabsContainer;
+                const pageGrid = this.dom.categoryPageGrid;
+                container.innerHTML = '<button class="tab-btn active" data-id="all">All</button>';
+                pageGrid.innerHTML = '';
+                for (const key in allCategories) {
+                    const category = allCategories[key];
+                    container.innerHTML += `<button class="tab-btn" data-id="${key}">${category.name}</button>`;
+                    const gridItem = document.createElement('div');
+                    gridItem.className = 'category-grid-item';
+                    gridItem.style.backgroundImage = `url(${this.getFullUrl(category.imageUrl) || placeholderImage})`;
+                    gridItem.innerHTML = `<span>${category.name}</span>`;
+                    gridItem.dataset.id = key;
+                    gridItem.addEventListener('click', () => {
+                        this.showPage('user-panel');
+                        this.filterMoviesByTab(key);
+                    });
+                    pageGrid.appendChild(gridItem);
+                }
+            }
+            handleCategoryTabClick(e) {
+                if (e.target.classList.contains('tab-btn')) this.filterMoviesByTab(e.target.dataset.id);
+            }
+            filterMoviesByTab(categoryId) {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.tab-btn[data-id="${categoryId}"]`).classList.add('active');
+                if (categoryId === 'all') {
+                    this.renderUserHomePage();
+                    return;
+                }
+                const moviesArray = Object.entries(allMovies).reverse();
+                const filteredMovies = moviesArray.filter(([id, movie]) => movie.category === categoryId);
+                this.renderMovieGridPage(allCategories[categoryId].name, filteredMovies);
+            }
+
+            async handleSaveBackgrounds(e) {
+                e.preventDefault();
+                this.showSpinner();
+                try {
+                    await update(ref(db, 'site_settings'), {
+                        loginBackgroundUrl: this.dom.loginBgUrlInput.value.trim(),
+                        registerBackgroundUrl: this.dom.registerBgUrlInput.value.trim()
+                    });
+                    alert('Backgrounds updated!');
+                } catch (error) {
+                    alert('Failed to update backgrounds.');
+                } finally {
+                    this.hideSpinner();
+                }
+            }
+            async handleSaveCategory(e) {
+                e.preventDefault();
+                const name = this.dom.categoryNameInput.value.trim();
+                const imageUrl = this.dom.categoryImageUrlInput.value.trim();
+                const categoryId = this.dom.categoryIdField.value;
+                if (name && imageUrl) {
+                    const categoryData = {
+                        name,
+                        imageUrl
+                    };
+                    if (categoryId) await update(ref(db, `categories/${categoryId}`), categoryData);
+                    else await push(ref(db, 'categories'), categoryData);
+                    this.resetCategoryForm();
+                } else {
+                    alert('Please provide a category name and image URL.');
+                }
+            }
+            async handleCategoryActions(e) {
+                const editBtn = e.target.closest('.edit-btn');
+                if (editBtn) {
+                    const {
+                        id,
+                        name,
+                        imageurl
+                    } = editBtn.dataset;
+                    this.dom.categoryIdField.value = id;
+                    this.dom.categoryNameInput.value = name;
+                    this.dom.categoryImageUrlInput.value = imageurl || '';
+                    this.dom.categorySubmitBtn.textContent = 'Update Category';
+                    this.dom.categoryNameInput.focus();
+                }
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (deleteBtn && confirm('Are you sure?')) {
+                    await remove(ref(db, `categories/${deleteBtn.dataset.id}`));
+                    this.resetCategoryForm();
+                }
+            }
+            resetCategoryForm() {
+                this.dom.categoryForm.reset();
+                this.dom.categoryIdField.value = '';
+                this.dom.categorySubmitBtn.textContent = 'Add Category';
+            }
+            async handleSaveMovie(e) {
+                e.preventDefault();
+                this.showSpinner();
+                const form = this.dom.uploadForm;
+                const movieData = {
+                    vimeoUrl: form['vimeo-url'].value,
+                    thumbnailUrl: form['thumbnail-url'].value,
+                    title: form['movie-title'].value,
+                    category: form['movie-category'].value,
+                    date: form['movie-date'].value,
+                    description: form['movie-description'].value,
+                    addToSlider: form['add-to-slider'].checked
+                };
+                const movieId = form['movie-id-field'].value;
+                try {
+                    if (movieId) await update(ref(db, `movies/${movieId}`), movieData);
+                    else await push(ref(db, 'movies'), movieData);
+                    form.reset();
+                    form['movie-id-field'].value = '';
+                } catch (error) {
+                    alert("Failed to save movie.");
+                } finally {
+                    this.hideSpinner();
+                }
+            }
+            renderAdminCategories() {
+                if (!this.dom.categoryList) return;
+                this.dom.categoryList.innerHTML = '';
+                Object.entries(allCategories).forEach(([key, cat]) => {
+                    const item = document.createElement('div');
+                    item.className = 'category-list-item';
+                    item.innerHTML = `<div class="category-list-info"><h3>${cat.name}</h3></div><div class="category-list-actions"><span data-id="${key}" data-name="${cat.name}" data-imageurl="${cat.imageUrl || ''}" class="edit-btn">&#9998;</span><span data-id="${key}" class="delete-btn">&#128465;</span></div>`;
+                    this.dom.categoryList.appendChild(item);
+                });
+                const adminSelect = this.dom.movieCategorySelect;
+                adminSelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
+                for (const key in allCategories) adminSelect.add(new Option(allCategories[key].name, key));
+            }
+            renderAdminMovies(searchTerm = '') {
+                if (!this.dom.adminMovieList) return;
+                const container = this.dom.adminMovieList;
+                container.innerHTML = '';
+                const lowerTerm = searchTerm.toLowerCase();
+                Object.entries(allMovies).reverse().forEach(([key, value]) => {
+                    if (!lowerTerm || value.title.toLowerCase().includes(lowerTerm)) container.appendChild(this.renderAdminMovieItem(key, value));
+                });
+            }
+            renderAdminMovieItem(key, data) {
+                const item = document.createElement('div');
+                item.className = 'movie-list-item';
+                item.innerHTML = `<img src="${this.getFullUrl(data.thumbnailUrl)}" onerror="this.onerror=null;this.src='${placeholderImage}';"><div class="movie-list-info"><h3>${data.title}</h3><p>${allCategories[data.category]?.name || 'Uncategorized'}</p></div><div class="movie-list-actions"><span class="edit-btn">&#9998;</span><span class="delete-btn">&#128465;</span></div>`;
+                item.querySelector('.edit-btn').addEventListener('click', () => {
+                    const f = this.dom.uploadForm;
+                    f['movie-id-field'].value = key;
+                    f['vimeo-url'].value = data.vimeoUrl;
+                    f['thumbnail-url'].value = data.thumbnailUrl;
+                    f['movie-title'].value = data.title;
+                    f['movie-category'].value = data.category;
+                    f['movie-date'].value = data.date;
+                    f['movie-description'].value = data.description;
+                    f['add-to-slider'].checked = data.addToSlider || false;
+                    window.scrollTo(0, 0);
+                });
+                item.querySelector('.delete-btn').addEventListener('click', async () => {
+                    if (confirm(`Delete "${data.title}"?`)) await remove(ref(db, `movies/${key}`));
+                });
+                return item;
+            }
+            handleAdminTabClick(tabId) {
+                this.dom.adminNavTabs.forEach(t => t.classList.remove('active'));
+                this.dom.adminTabContents.forEach(c => c.classList.remove('active'));
+                document.querySelector(`.admin-tab-btn[data-tab="${tabId}"]`).classList.add('active');
+                document.getElementById(`admin-tab-${tabId}`).classList.add('active');
+            }
+
+            destroyPlayers() {
+                if (this.countdownInterval) clearInterval(this.countdownInterval);
+                const countdownOverlay = this.dom.videoPlayerWrapper.querySelector('#autoplay-countdown-overlay');
+                if (countdownOverlay) countdownOverlay.classList.add('hidden');
+                if (this.youtubePlayer && typeof this.youtubePlayer.destroy === 'function') {
+                    this.youtubePlayer.destroy();
+                    this.youtubePlayer = null;
+                }
+                if (this.vimeoPlayer && typeof this.vimeoPlayer.destroy === 'function') {
+                    this.vimeoPlayer.destroy();
+                    this.vimeoPlayer = null;
+                }
+                this.dom.videoPlayerWrapper.innerHTML = '';
+            }
+            startAutoplayCountdown(nextMovieId) {
+                if (!this.isAutoplayEnabled) return;
+                const countdownOverlay = this.dom.videoPlayerWrapper.querySelector('#autoplay-countdown-overlay');
+                const countdownNumber = countdownOverlay.querySelector('#autoplay-countdown-number');
+                if (!countdownOverlay || !countdownNumber) return;
+                countdownOverlay.classList.remove('hidden');
+                let count = 1;
+                countdownNumber.textContent = count;
+                countdownNumber.classList.add('animate');
+                this.countdownInterval = setInterval(() => {
+                    count++;
+                    if (count > 5) {
+                        clearInterval(this.countdownInterval);
+                        countdownOverlay.classList.add('hidden');
+                        this.showStreamPage(nextMovieId);
+                    } else {
+                        countdownNumber.textContent = count;
+                        countdownNumber.classList.remove('animate');
+                        void countdownNumber.offsetWidth;
+                        countdownNumber.classList.add('animate');
+                    }
+                }, 1000);
+            }
+            playNextInCategory() {
+                const {
+                    movieId,
+                    categoryId
+                } = this.currentStream;
+                if (!categoryId) return;
+                const moviesInCategory = Object.entries(allMovies).filter(([id, movie]) => movie.category === categoryId && id !== movieId);
+                if (moviesInCategory.length > 0) {
+                    const [nextMovieId] = moviesInCategory[Math.floor(Math.random() * moviesInCategory.length)];
+                    this.startAutoplayCountdown(nextMovieId);
+                }
+            }
+            renderRelatedVideos(currentMovieId, categoryId) {
+                const container = this.dom.relatedVideosContainer;
+                container.innerHTML = '<h3>Up Next</h3>';
+                const related = Object.entries(allMovies).filter(([id, movie]) => movie.category === categoryId && id !== currentMovieId);
+                if (related.length === 0) {
+                    container.innerHTML += '<p>No other videos in this category.</p>';
+                    return;
+                }
+                related.slice(0, 10).forEach(([id, movie]) => {
+                    const item = document.createElement('div');
+                    item.className = 'related-video-item';
+                    item.dataset.movieId = id;
+                    item.innerHTML = `<img src="${this.getFullUrl(movie.thumbnailUrl)}" onerror="this.onerror=null;this.src='${placeholderImage}';"><div class="related-video-info"><h4>${movie.title}</h4><p>${movie.date}</p></div>`;
+                    container.appendChild(item);
+                });
+            }
+            showStreamPage(movieId) {
+                const movie = allMovies[movieId];
+                if (!movie) return;
+
+                this.currentStream = {
+                    movieId,
+                    categoryId: movie.category
+                };
+                this.dom.streamMovieTitleHeader.textContent = movie.title;
+                this.dom.streamMovieTitle.textContent = movie.title;
+                this.dom.streamMovieYear.textContent = movie.date;
+                this.dom.streamMovieDescription.textContent = movie.description;
+                this.dom.likeBtn.dataset.movieId = movieId;
+                this.dom.watchlistBtn.dataset.movieId = movieId;
+                document.querySelector('#stream-page main').scrollTop = 0;
+
+                this.destroyPlayers();
+                const playerWrapper = this.dom.videoPlayerWrapper;
+                const videoUrl = this.getFullUrl(movie.vimeoUrl);
+
+                if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                    const videoIdMatch = videoUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu.be\/)([a-zA-Z0-9_-]{11})/);
+                    if (videoIdMatch && videoIdMatch[1]) {
+                        const playerDiv = document.createElement('div');
+                        playerWrapper.appendChild(playerDiv);
+                        this.youtubePlayer = new YT.Player(playerDiv, {
+                            height: '100%',
+                            width: '100%',
+                            videoId: videoIdMatch[1],
+                            playerVars: {
+                                'autoplay': 1,
+                                'rel': 0,
+                                'modestbranding': 1,
+                                'playsinline': 1
+                            },
+                            events: {
+                                'onStateChange': (event) => {
+                                    if (event.data === YT.PlayerState.ENDED) this.playNextInCategory();
+                                }
+                            }
+                        });
+                    }
+                } else if (videoUrl.includes('vimeo.com')) {
+                    const vimeoId = videoUrl.split('/').pop().split('?')[0];
+                    this.vimeoPlayer = new Vimeo.Player(playerWrapper, {
+                        id: vimeoId,
+                        autoplay: true,
+                        responsive: true
+                    });
+                    this.vimeoPlayer.on('ended', () => this.playNextInCategory());
+                } else {
+                    playerWrapper.innerHTML = `<video controls autoplay controlsList="nodownload" src="${videoUrl}" style="width:100%; height:100%;" webkit-playsinline playsinline></video>`;
+                    const videoElement = playerWrapper.querySelector('video');
+                    if (videoElement) videoElement.addEventListener('ended', () => this.playNextInCategory());
+                }
+
+                playerWrapper.insertAdjacentHTML('beforeend', `<div id="autoplay-countdown-overlay" class="hidden"><span id="autoplay-countdown-number"></span></div>`);
+
+                this.renderRelatedVideos(movieId, movie.category);
+                this.updateInteractionIcons();
+                this.showPage('stream-page');
+            }
+
+            toggleProfilePopup() {
+                this.dom.profilePopup.classList.toggle('hidden');
+                if (!this.dom.profilePopup.classList.contains('hidden')) {
+                    this.dom.nameInput.value = currentUserData.name || '';
+                    this.populateProfileLists();
+                }
+            }
+            async handleNameChange(e) {
+                e.preventDefault();
+                const newName = this.dom.nameInput.value.trim();
+                if (newName && newName !== currentUserData.name) {
+                    this.showSpinner();
+                    try {
+                        await update(ref(db, `users/${currentUser.uid}`), {
+                            name: newName
+                        });
+                        alert("Name updated!");
+                    } catch (error) {
+                        alert("Failed to update name.");
+                    } finally {
+                        this.hideSpinner();
+                    }
+                }
+            }
+            async toggleUserMovieInteraction(type, id) {
+                if (!currentUser || !id) return;
+                const path = `users/${currentUser.uid}/${type}/${id}`;
+                try {
+                    currentUserData?.[type]?.[id] ? await remove(ref(db, path)) : await set(ref(db, path), true);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            populateProfileLists() {
+                const populate = (ul, ids, type) => {
+                    ul.innerHTML = '';
+                    if (!ids || Object.keys(ids).length === 0) {
+                        ul.innerHTML = '<li>No movies yet.</li>';
+                        return;
+                    }
+                    Object.keys(ids).forEach(id => {
+                        if (allMovies[id]) {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<span class="movie-title" data-movie-id="${id}">${allMovies[id].title}</span><span class="remove-icon" data-type="${type}" data-movie-id="${id}">&#128465;</span>`;
+                            ul.appendChild(li);
+                        }
+                    });
+                };
+                populate(this.dom.likedMoviesList, currentUserData.likedMovies, 'likedMovies');
+                populate(this.dom.watchlistMoviesList, currentUserData.watchlist, 'watchlist');
+            }
+            handleProfileMovieClick(e) {
+                const titleEl = e.target.closest('.movie-title');
+                const removeEl = e.target.closest('.remove-icon');
+                if (titleEl) {
+                    this.dom.profilePopup.classList.add('hidden');
+                    this.showStreamPage(titleEl.dataset.movieId);
+                }
+                if (removeEl && confirm("Are you sure?")) this.toggleUserMovieInteraction(removeEl.dataset.type, removeEl.dataset.movieId);
+            }
+
+            async handleShareApp() {
+                const shareData = {
+                    title: 'Bahari App',
+                    text: 'এই অ্যাপটি দেখুন!',
+                    url: SHARE_LINK
+                };
+                if (navigator.share) {
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.log('User cancelled share');
+                    }
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(SHARE_LINK).then(() => {
+                            this.showToast("লিংক কপি করা হয়েছে");
+                        }).catch(err => {
+                            console.error('Failed to copy: ', err);
+                            alert("লিংক কপি করা যায়নি।");
+                        });
+                    } else {
+                        alert("Sharing is not supported on this browser.");
+                    }
+                }
+            }
+            showToast(message) {
+                const existingToast = document.getElementById('copy-toast');
+                if (existingToast) existingToast.remove();
+
+                const toast = document.createElement('div');
+                toast.id = 'copy-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 300);
+                    }, 2000);
+                }, 10);
+            }
+            updateInteractionIcons() {
+                const movieId = this.dom.likeBtn.dataset.movieId;
+                if (!movieId || !currentUserData) return;
+                this.dom.likeBtn.classList.toggle('active', !!currentUserData.likedMovies?.[movieId]);
+                this.dom.watchlistBtn.classList.toggle('active', !!currentUserData.watchlist?.[movieId]);
+            }
+        }
+    </script>
+</body>
+
+</html>
