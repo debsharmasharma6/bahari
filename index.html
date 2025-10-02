@@ -1,13 +1,14 @@
+
 <!DOCTYPE html>
-
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <title>Bahari</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#007aff">
     <style>
+        /* আপনার সকল CSS কোড এখানে থাকবে (আগের মতোই) */
         :root {
             --primary-color: #0F1014;
             --background-color: #F5F5F7;
@@ -19,7 +20,6 @@
             --text-secondary: #555555;
             --accent-color: #007aff;
             --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
             --border-radius-sm: 8px;
             --border-radius-md: 12px;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -258,55 +258,6 @@
             text-align: center;
             font-weight: bold;
             margin-bottom: 0.5rem;
-        }
-        
-        .divider {
-            text-align: center;
-            color: #ccc;
-            margin: 1.2rem 0;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            font-weight: bold;
-            position: relative;
-        }
-        
-        .divider::before, .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 35%;
-            height: 1px;
-            background-color: #555;
-        }
-        
-        .divider::before {
-            left: 0;
-        }
-        
-        .divider::after {
-            right: 0;
-        }
-        
-        .google-signin-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 0.9rem;
-            font-size: 1rem;
-            font-weight: bold;
-            background-color: #FFFFFF;
-            color: #444;
-            border: 1px solid #DDDDDD;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .google-signin-btn:hover {
-            background-color: #f7f7f7;
         }
 
         #user-panel-header {
@@ -1260,11 +1211,6 @@
                     </div>
                     <button type="submit">Login</button>
                 </form>
-                <div class="divider">OR</div>
-                <button type="button" id="google-signin-btn-login" class="google-signin-btn">
-                    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.8427 2.0782-1.7772 2.7218v2.2582h2.9082c1.7018-1.5664 2.6836-3.8736 2.6836-6.621z" fill="#4285F4"></path><path d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1818l-2.9082-2.2582c-.8064.5427-1.8409.8618-3.0482.8618-2.3455 0-4.3291-1.5818-5.0355-3.7109H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"></path><path d="M3.9645 10.71c-.1818-.5427-.2827-1.1164-.2827-1.71s.1009-1.1673.2827-1.71V4.9582H.9573C.3473 6.1732 0 7.5477 0 9s.3473 2.8268.9573 4.0418L3.9645 10.71z" fill="#FBBC05"></path><path d="M9 3.5455c1.3218 0 2.5073.4555 3.4409 1.3464l2.5818-2.5818C13.4636.8918 11.43 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9645 7.29C4.6709 5.1609 6.6545 3.5455 9 3.5455z" fill="#EA4335"></path></g></svg>
-                    <span>Sign in with Google</span>
-                </button>
                 <p class="auth-toggle" onclick="app.toggleAuthView(false)">Don't have an account? Register</p>
             </div>
             <div id="register-view" class="hidden">
@@ -1303,11 +1249,6 @@
                     </div>
                     <button type="submit">Register</button>
                 </form>
-                <div class="divider">OR</div>
-                <button type="button" id="google-signin-btn-register" class="google-signin-btn">
-                    <svg width="20" height="20" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4818h4.8436c-.2086 1.125-.8427 2.0782-1.7772 2.7218v2.2582h2.9082c1.7018-1.5664 2.6836-3.8736 2.6836-6.621z" fill="#4285F4"></path><path d="M9 18c2.43 0 4.4673-.8064 5.9564-2.1818l-2.9082-2.2582c-.8064.5427-1.8409.8618-3.0482.8618-2.3455 0-4.3291-1.5818-5.0355-3.7109H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18z" fill="#34A853"></path><path d="M3.9645 10.71c-.1818-.5427-.2827-1.1164-.2827-1.71s.1009-1.1673.2827-1.71V4.9582H.9573C.3473 6.1732 0 7.5477 0 9s.3473 2.8268.9573 4.0418L3.9645 10.71z" fill="#FBBC05"></path><path d="M9 3.5455c1.3218 0 2.5073.4555 3.4409 1.3464l2.5818-2.5818C13.4636.8918 11.43 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9645 7.29C4.6709 5.1609 6.6545 3.5455 9 3.5455z" fill="#EA4335"></path></g></svg>
-                    <span>Sign up with Google</span>
-                </button>
                 <p class="auth-toggle" onclick="app.toggleAuthView(true)">Already have an account? Login</p>
             </div>
         </div>
@@ -1340,7 +1281,14 @@
                         </select>
                         <input type="text" id="movie-date" placeholder="Release Year" required>
                         <textarea id="movie-description" placeholder="Description" required></textarea>
-                        <div class="checkbox-container"><input type="checkbox" id="add-to-slider"><label for="add-to-slider">Hero Slider-এ যোগ করুন</label></div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="add-to-slider">
+                            <label for="add-to-slider">Hero Slider-এ যোগ করুন</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="send-notification-checkbox">
+                            <label for="send-notification-checkbox">নোটিফিকেশন পাঠান</label>
+                        </div>
                         <button type="submit">Save Movie</button>
                     </form>
                 </div>
@@ -1567,51 +1515,72 @@
     <script src="https://player.vimeo.com/api/player.js"></script>
 
     <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
-        import {
-            getAuth,
-            createUserWithEmailAndPassword,
-            signInWithEmailAndPassword,
-            signOut,
-            onAuthStateChanged,
-            GoogleAuthProvider,
-            signInWithPopup
-        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import {
-            getDatabase,
-            ref,
-            set,
-            get,
-            push,
-            remove,
-            onValue,
-            update
-        } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-        // Your web app's Firebase configuration
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, push, remove, onValue, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+        
         const firebaseConfig = {
-            apiKey: "AIzaSyAs82Or7bJPuBE3A_QmRAz18CkRb9iKRZE",
-            authDomain: "bahari-52fdb.firebaseapp.com",
-            projectId: "bahari-52fdb",
-            storageBucket: "bahari-52fdb.firebasestorage.app",
-            messagingSenderId: "89195698661",
-            appId: "1:89195698661:web:b8fa8277a2103da37b370c",
-            measurementId: "G-SG95J2VS7G"
+          apiKey: "AIzaSyAs82Or7bJPuBE3A_QmRAz18CkRb9iKRZE",
+          authDomain: "bahari-52fdb.firebaseapp.com",
+          databaseURL: "https://bahari-52fdb-default-rtdb.firebaseio.com",
+          projectId: "bahari-52fdb",
+          storageBucket: "bahari-52fdb.appspot.com",
+          messagingSenderId: "89195698661",
+          appId: "1:89195698661:web:b8fa8277a2103da37b370c",
+          measurementId: "G-SG95J2VS7G"
         };
         
-        // Initialize Firebase
+        const R2_PUBLIC_URL = "https://pub-1c1ee5cfcd4e4f979f7b377f41190793.r2.dev";
+        const SHARE_LINK = "https://play.google.com/store/apps/details?id=adarsha.bornolipi.in";
+
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        const googleProvider = new GoogleAuthProvider();
+        let messaging;
+        try {
+            messaging = getMessaging(app);
+        } catch(err) {
+            console.error("Firebase Messaging not supported in this browser:", err);
+        }
 
-        const R2_PUBLIC_URL = "https://pub-1c1ee5cfcd4e4f979f7b377f41190793.r2.dev";
-        const SHARE_LINK = "https://play.google.com/store/apps/details?id=adarsha.bornolipi.in";
 
+        // --- Push Notification Logic ---
+        async function requestNotificationPermission() {
+            if (!messaging) return; // যদি মেসেজিং সাপোর্ট না করে, তাহলে কিছুই করবেনা
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('Notification permission granted.');
+                    
+                    const fcmToken = await getToken(messaging, { 
+                        vapidKey: 'BIfPuNqnJWdwSUi5lv84UFur0fQQIS0543NcaVHxxwu7IPd5Isq2w5cAPzJuJWBs-chj93PN46ZBa0BWcdmcmJo' 
+                    });
+                    
+                    if (fcmToken) {
+                        console.log('FCM Token:', fcmToken);
+                        const tokenRef = ref(db, `fcmTokens/${fcmToken}`);
+                        await set(tokenRef, true);
+                    } else {
+                        console.log('No registration token available.');
+                    }
+                } else {
+                    console.log('Unable to get permission to notify.');
+                }
+            } catch(err) {
+                console.error('An error occurred while retrieving token. ', err);
+            }
+        }
+        
+        if (messaging) {
+            onMessage(messaging, (payload) => {
+                console.log('Foreground message received. ', payload);
+                alert(`New Video: ${payload.notification.title}`);
+            });
+        }
+        
         let currentUser = null,
             currentUserData = null,
             allMovies = {},
@@ -1640,7 +1609,8 @@
 
         class MovieApp {
             constructor() {
-                this.youtubePlayer = null;
+                // ... (rest of the constructor, same as before)
+                 this.youtubePlayer = null;
                 this.vimeoPlayer = null;
                 this.countdownInterval = null;
                 this.currentStream = {
@@ -1673,8 +1643,6 @@
                     registerError: document.getElementById('register-error'),
                     registerEmailError: document.getElementById('register-email-error'),
                     registerPhoneError: document.getElementById('register-phone-error'),
-                    googleSignInBtnLogin: document.getElementById('google-signin-btn-login'),
-                    googleSignInBtnRegister: document.getElementById('google-signin-btn-register'),
                     adminLogoutBtn: document.getElementById('admin-logout-btn'),
                     uploadForm: document.getElementById('upload-form'),
                     adminMovieList: document.getElementById('admin-movie-list'),
@@ -1728,10 +1696,9 @@
                 };
             }
             initEventListeners() {
+                // ... (same as before)
                 this.dom.loginForm.addEventListener('submit', this.handleLogin.bind(this));
                 this.dom.registerForm.addEventListener('submit', this.handleRegister.bind(this));
-                this.dom.googleSignInBtnLogin.addEventListener('click', this.handleGoogleSignIn.bind(this));
-                this.dom.googleSignInBtnRegister.addEventListener('click', this.handleGoogleSignIn.bind(this));
                 this.dom.adminLogoutBtn.addEventListener('click', this.handleLogout.bind(this));
                 this.dom.profileLogoutBtn.addEventListener('click', this.handleLogout.bind(this));
                 this.dom.categoryForm.addEventListener('submit', this.handleSaveCategory.bind(this));
@@ -1741,6 +1708,8 @@
                 this.dom.profileIconBtn.addEventListener('click', this.toggleProfilePopup.bind(this));
                 this.dom.backToHomeBtn.addEventListener('click', () => {
                     this.destroyPlayers();
+                    // url থেকে movieId মুছে দিন
+                    window.history.pushState({}, document.title, window.location.pathname);
                     this.showPage(this.streamEntryPointPage || 'user-panel');
                 });
                 this.dom.likeBtn.addEventListener('click', () => this.toggleUserMovieInteraction('likedMovies', this.dom.likeBtn.dataset.movieId));
@@ -1764,7 +1733,8 @@
                 this.dom.shareAppBtn.addEventListener('click', this.handleShareApp.bind(this));
                 this.dom.privacyPolicyBtn.addEventListener('click', () => window.open('https://sites.google.com/view/bangla-status-and-shairi/%E0%A6%B9%E0%A6%AE', '_blank'));
             }
-
+            
+            // ... (rest of the methods, same as before)
             getFullUrl(filename) {
                 if (!filename) return '';
                 if (filename.startsWith('http')) return filename;
@@ -1878,49 +1848,37 @@
                 this.dom.registerView.classList.toggle('hidden', showLogin);
                 this.applyBackground(showLogin);
             }
-            handleAuthStateChange() {
-                onAuthStateChanged(auth, async (user) => {
-                    if (!navigator.onLine) {
-                        this.dom.spinner.classList.add('offline-spinner');
-                        return;
-                    }
-                    this.showSpinner();
-                    if (user) {
-                        const snap = await get(ref(db, `users/${user.uid}`));
-                        if (snap.exists()) {
-                            currentUser = user;
-                            currentUserData = snap.val();
-                            this.dom.ageVerificationOverlay.classList.add('hidden');
-                            this.initAppForUser();
+            async handleAuthStateChange() {
+                this.showSpinner();
+                try {
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            const snap = await get(ref(db, `users/${user.uid}`));
+                            if (snap.exists()) {
+                                currentUser = user;
+                                currentUserData = snap.val();
+                                this.dom.ageVerificationOverlay.classList.add('hidden');
+                                await this.initAppForUser();
+                            } else {
+                                this.handleLogout();
+                            }
                         } else {
-                            // This case handles new Google Sign-In users who were just created but whose
-                            // onAuthStateChanged might fire before their DB record is fully available.
-                            // A small delay and retry can help.
-                            setTimeout(async () => {
-                                const delayedSnap = await get(ref(db, `users/${user.uid}`));
-                                if (delayedSnap.exists()){
-                                    currentUser = user;
-                                    currentUserData = delayedSnap.val();
-                                    this.dom.ageVerificationOverlay.classList.add('hidden');
-                                    this.initAppForUser();
-                                } else {
-                                     this.handleLogout();
-                                }
-                            }, 1000);
+                            currentUser = null;
+                            currentUserData = null;
+                            if (sessionStorage.getItem('isAgeVerified')) {
+                                this.showPage('auth-page');
+                                this.toggleAuthView(true);
+                            } else {
+                                this.dom.pages.forEach(p => p.classList.remove('active'));
+                                this.dom.ageVerificationOverlay.classList.remove('hidden');
+                            }
                         }
-                    } else {
-                        currentUser = null;
-                        currentUserData = null;
-                        if (sessionStorage.getItem('isAgeVerified')) {
-                            this.showPage('auth-page');
-                            this.toggleAuthView(true);
-                        } else {
-                            this.dom.pages.forEach(p => p.classList.remove('active'));
-                            this.dom.ageVerificationOverlay.classList.remove('hidden');
-                        }
-                    }
-                    this.hideSpinner();
-                });
+                        this.hideSpinner(); // Move hideSpinner inside to ensure it runs after async ops
+                    });
+                } catch(error) {
+                    console.error("Auth state change error:", error);
+                    this.hideSpinner(); // Also hide on error
+                }
             }
             handleAgeVerification() {
                 sessionStorage.setItem('isAgeVerified', 'true');
@@ -1995,70 +1953,38 @@
                     this.hideSpinner();
                 }
             }
-            async handleGoogleSignIn() {
-                this.showSpinner();
-                this.dom.loginError.classList.add('hidden');
-                this.dom.registerError.classList.add('hidden');
-                try {
-                    const result = await signInWithPopup(auth, googleProvider);
-                    const user = result.user;
-                    // Check if user exists in our DB, if not, create them
-                    const userRef = ref(db, `users/${user.uid}`);
-                    const snapshot = await get(userRef);
-                    if (!snapshot.exists()) {
-                        await set(userRef, {
-                            name: user.displayName || 'Google User',
-                            email: user.email,
-                            role: 'user',
-                            // Note: phoneNumber is not provided by Google Auth
-                        });
-                    }
-                    // onAuthStateChanged will handle the rest
-                } catch (error) {
-                    console.error("Google Sign-In Error:", error);
-                    let message = "Failed to sign in with Google. Please try again.";
-                    if (error.code === 'auth/popup-blocked') {
-                        message = "Popup was blocked by the browser. Please allow popups for this site.";
-                    } else if (error.code === 'auth/cancelled-popup-request') {
-                        // Don't show an error if the user just closed the window
-                        message = "";
-                    }
-                    if (message){
-                        this.dom.loginError.textContent = message;
-                        this.dom.loginError.classList.remove('hidden');
-                        this.dom.registerError.textContent = message;
-                        this.dom.registerError.classList.remove('hidden');
-                    }
-                } finally {
-                    this.hideSpinner();
-                }
-            }
             handleLogout() {
                 sessionStorage.removeItem('isAgeVerified');
                 signOut(auth);
                 this.dom.profilePopup.classList.add('hidden');
             }
-            initAppForUser() {
-                onValue(ref(db, 'movies'), s => {
-                    allMovies = s.val() || {};
-                    if (currentUserData.role === 'user') this.renderUserHomePage();
-                    else this.renderAdminMovies();
-                });
-                onValue(ref(db, 'categories'), s => {
-                    allCategories = s.val() || {};
-                    this.renderAdminCategories();
-                    if (currentUserData.role === 'user') this.renderUserCategoryTabs();
-                });
-                onValue(ref(db, `users/${currentUser.uid}`), s => {
-                    currentUserData = s.val() || {};
-                    if (!this.dom.profilePopup.classList.contains('hidden')) this.populateProfileLists();
-                    this.updateInteractionIcons();
-                });
+            async initAppForUser() {
+                // ডেটা লোড হওয়ার জন্য Promise ব্যবহার করুন
+                const moviesPromise = new Promise(resolve => onValue(ref(db, 'movies'), s => { allMovies = s.val() || {}; resolve(); }, { onlyOnce: true }));
+                const categoriesPromise = new Promise(resolve => onValue(ref(db, 'categories'), s => { allCategories = s.val() || {}; resolve(); }, { onlyOnce: true }));
+                const userPromise = new Promise(resolve => onValue(ref(db, `users/${currentUser.uid}`), s => { currentUserData = s.val() || {}; resolve(); }, { onlyOnce: true }));
+                
+                await Promise.all([moviesPromise, categoriesPromise, userPromise]);
+
+                this.renderAdminCategories(); // admin এবং user উভয়ের জন্য ক্যাটাগরি দরকার
+                
                 if (currentUserData.role === 'admin') {
                     this.dom.loginBgUrlInput.value = this.siteSettings.loginBackgroundUrl || '';
                     this.dom.registerBgUrlInput.value = this.siteSettings.registerBackgroundUrl || '';
+                    this.renderAdminMovies();
+                } else {
+                    this.renderUserCategoryTabs();
+                    this.renderUserHomePage();
+                    requestNotificationPermission(); // ডেটা লোড হওয়ার পর পারমিশন চান
                 }
+                
                 this.showPage(currentUserData.role === 'admin' ? 'admin-panel' : 'user-panel');
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const movieIdFromUrl = urlParams.get('movieId');
+                if (movieIdFromUrl && allMovies[movieIdFromUrl]) {
+                    this.showStreamPage(movieIdFromUrl);
+                }
             }
             handleBodyClick(e) {
                 const movieCard = e.target.closest('.movie-card, .hero-slide, .related-video-item');
@@ -2085,6 +2011,9 @@
                 }
             }
             renderUserHomePage() {
+                 const urlParams = new URLSearchParams(window.location.search);
+                if(urlParams.get('movieId')) return; // যদি কোনো মুভি প্লে হয়, তাহলে হোম পেজ রেন্ডার করবে না
+
                 const mainContainer = this.dom.userPanelMain;
                 mainContainer.innerHTML = '';
                 const moviesArray = Object.entries(allMovies).reverse();
@@ -2251,13 +2180,32 @@
                     description: form['movie-description'].value,
                     addToSlider: form['add-to-slider'].checked
                 };
-                const movieId = form['movie-id-field'].value;
+                let movieId = form['movie-id-field'].value;
                 try {
-                    if (movieId) await update(ref(db, `movies/${movieId}`), movieData);
-                    else await push(ref(db, 'movies'), movieData);
+                    if (movieId) {
+                        await update(ref(db, `movies/${movieId}`), movieData);
+                    } else {
+                        const newMovieRef = await push(ref(db, 'movies'), movieData);
+                        movieId = newMovieRef.key;
+                    }
+
+                    if (form['send-notification-checkbox'].checked) {
+                        const notificationData = {
+                            title: movieData.title,
+                            imageUrl: this.getFullUrl(movieData.thumbnailUrl),
+                            movieId: movieId
+                        };
+                        await push(ref(db, 'latestNotification'), notificationData);
+                        alert("Movie saved and notification will be sent!");
+                    } else {
+                         alert("Movie saved successfully!");
+                    }
+
                     form.reset();
                     form['movie-id-field'].value = '';
+
                 } catch (error) {
+                    console.error("Save movie error: ", error);
                     alert("Failed to save movie.");
                 } finally {
                     this.hideSpinner();
@@ -2299,6 +2247,7 @@
                     f['movie-date'].value = data.date;
                     f['movie-description'].value = data.description;
                     f['add-to-slider'].checked = data.addToSlider || false;
+                    f['send-notification-checkbox'].checked = false; // Reset notification checkbox
                     window.scrollTo(0, 0);
                 });
                 item.querySelector('.delete-btn').addEventListener('click', async () => {
@@ -2379,9 +2328,16 @@
                 });
             }
             showStreamPage(movieId) {
+                if (!allMovies || Object.keys(allMovies).length === 0) {
+                    setTimeout(() => this.showStreamPage(movieId), 1000);
+                    return;
+                }
                 const movie = allMovies[movieId];
-                if (!movie) return;
-
+                if (!movie) {
+                    console.error("Movie not found!", movieId);
+                    return;
+                }
+                
                 this.currentStream = {
                     movieId,
                     categoryId: movie.category
@@ -2515,7 +2471,6 @@
                         console.log('User cancelled share');
                     }
                 } else {
-                    // Fallback for browsers that don't support Web Share API
                     if (navigator.clipboard) {
                         navigator.clipboard.writeText(SHARE_LINK).then(() => {
                             this.showToast("লিংক কপি করা হয়েছে");
@@ -2554,5 +2509,4 @@
         }
     </script>
 </body>
-
 </html>
