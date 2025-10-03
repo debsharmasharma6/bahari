@@ -2,6 +2,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Bahari</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+    ...
+    </style>
+    </head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <title>Bahari</title>
@@ -2509,5 +2521,27 @@
             }
         }
     </script>
+        <script type="module">
+        // ... আপনার আগের Firebase কোড ...
+
+        // Service Worker Registration Code
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        let movieAppInstance;
+        let isAppInitialized = false;
+
+        function initializeAppOnce() {
+        // ... বাকি কোড ...
+            
 </body>
 </html>
