@@ -1,0 +1,33 @@
+name: Deploy Cloud Functions to Firebase
+
+on:
+  push:
+    branches:
+      - main  # আপনার মূল ব্রাঞ্চের নাম main হলে এটি ব্যবহার করুন
+    paths:
+      - 'functions/**' # শুধুমাত্র functions ফোল্ডারে কিছু পরিবর্তন হলেই কাজ করবে
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: cd functions && npm install
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          action: deploy
+          args: --only functions
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+
